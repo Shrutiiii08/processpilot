@@ -1,10 +1,11 @@
-
+	
 #include "resource_monitor.hpp"
 
 #include <fstream>
 #include <sstream>
 #include <thread>
 #include <chrono>
+#include <sys/statvfs.h>
 
 namespace processpilot {
 
@@ -115,5 +116,29 @@ double get_memory_usage() {
         / total_memory;
 
     return memory_usage;
+}
+double get_disk_usage() {
+
+    struct statvfs disk_info;
+
+    if (statvfs("/", &disk_info) != 0) {
+        return -1.0;
+    }
+
+    unsigned long long total_blocks = disk_info.f_blocks;
+    unsigned long long available_blocks = disk_info.f_bavail;
+
+    if (total_blocks == 0) {
+        return -1.0;
+    }
+
+    unsigned long long used_blocks =
+        total_blocks - available_blocks;
+
+    double disk_usage =
+        100.0 * static_cast<double>(used_blocks)
+        / static_cast<double>(total_blocks);
+
+    return disk_usage;
 }
 }

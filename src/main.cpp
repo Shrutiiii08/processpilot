@@ -36,5 +36,19 @@ std::cout << "RAM Usage: "
           << memory_usage
           << "%"
           << std::endl;
+    
+double disk_usage = processpilot::get_disk_usage();
+
+if (disk_usage < 0) {
+    std::cerr << "Error: Could not read disk usage."
+              << std::endl;
+
+    return 1;
+}
+
+std::cout << "Disk Usage: "
+          << disk_usage
+          << "%"
+          << std::endl;
     return 0;
 }
