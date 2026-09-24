@@ -1,7 +1,8 @@
-	
+		
 #include "resource_monitor.hpp"
 
 #include <fstream>
+#include <string>
 #include <sstream>
 #include <thread>
 #include <chrono>
@@ -140,5 +141,17 @@ double get_disk_usage() {
         / static_cast<double>(total_blocks);
 
     return disk_usage;
+}
+bool is_network_up() {
+    std::ifstream file("/sys/class/net/eth0/operstate");
+
+    if (!file) {
+        return false;
+    }
+
+    std::string state;
+    file >> state;
+
+    return state == "up";
 }
 }

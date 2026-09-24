@@ -50,5 +50,12 @@ std::cout << "Disk Usage: "
           << disk_usage
           << "%"
           << std::endl;
+bool network_status = processpilot::is_network_up();
+
+if (network_status) {
+    std::cout << "Network Status: UP" << std::endl;
+} else {
+    std::cout << "Network Status: DOWN" << std::endl;
+}
     return 0;
 }
