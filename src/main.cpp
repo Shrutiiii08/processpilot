@@ -2,12 +2,33 @@
 #include <iomanip>
 #include <thread>
 #include <chrono>
+#include <map>
+#include <string>
 #include "monitor/resource_monitor.hpp"
+
+namespace processpilot {
+
+std::map<std::string, std::string> load_config(
+    const std::string& filename);
+
+}
 
 int main() {
 
     std::cout << "ProcessPilot started successfully!"
               << std::endl;
+std::map<std::string, std::string> config =
+    processpilot::load_config("configs/demo.service");
+
+if (config.empty()) {
+    std::cerr << "Error: Configuration could not be loaded."
+              << std::endl;
+
+    return 1;
+}
+
+std::cout << "Configuration loaded successfully!"
+          << std::endl;
 while (true) {
     double cpu_usage = processpilot::get_cpu_usage();
     if (cpu_usage < 0) {
