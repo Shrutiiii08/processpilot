@@ -1,15 +1,15 @@
 #include <iostream>
 #include <iomanip>
-
+#include <thread>
+#include <chrono>
 #include "monitor/resource_monitor.hpp"
 
 int main() {
 
     std::cout << "ProcessPilot started successfully!"
               << std::endl;
-
+while (true) {
     double cpu_usage = processpilot::get_cpu_usage();
-
     if (cpu_usage < 0) {
         std::cerr << "Error: Could not read CPU usage."
                   << std::endl;
@@ -23,6 +23,9 @@ int main() {
               << cpu_usage
               << "%"
               << std::endl;
+if (cpu_usage > 80.0) {
+    std::cout << "WARNING: High CPU usage detected!" << std::endl;
+}
 double memory_usage = processpilot::get_memory_usage();
 
 if (memory_usage < 0) {
@@ -63,6 +66,8 @@ if (bash_running) {
     std::cout << "Bash Process: RUNNING" << std::endl;
 } else {
     std::cout << "Bash Process: NOT RUNNING" << std::endl;
+}
+ std::this_thread::sleep_for(std::chrono::seconds(5));
 }
     return 0;
 }
