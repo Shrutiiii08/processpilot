@@ -75,4 +75,45 @@ double get_cpu_usage() {
     return cpu_usage;
 }
 
+double get_memory_usage() {
+
+    std::ifstream file("/proc/meminfo");
+
+    if (!file.is_open()) {
+        return -1.0;
+    }
+
+    std::string label;
+    long long value;
+    std::string unit;
+
+    long long total_memory = 0;
+    long long available_memory = 0;
+
+    while (file >> label >> value >> unit) {
+
+        if (label == "MemTotal:") {
+            total_memory = value;
+        }
+        else if (label == "MemAvailable:") {
+            available_memory = value;
+        }
+
+        if (total_memory > 0 && available_memory > 0) {
+            break;
+        }
+    }
+
+    file.close();
+
+    if (total_memory == 0) {
+        return -1.0;
+    }
+
+    double memory_usage =
+        100.0 * (total_memory - available_memory)
+        / total_memory;
+
+    return memory_usage;
+}
 }

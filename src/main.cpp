@@ -23,6 +23,18 @@ int main() {
               << cpu_usage
               << "%"
               << std::endl;
+double memory_usage = processpilot::get_memory_usage();
 
+if (memory_usage < 0) {
+    std::cerr << "Error: Could not read memory usage."
+              << std::endl;
+
+    return 1;
+}
+
+std::cout << "RAM Usage: "
+          << memory_usage
+          << "%"
+          << std::endl;
     return 0;
 }
