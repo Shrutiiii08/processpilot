@@ -7,7 +7,7 @@
 #include <thread>
 #include <chrono>
 #include <sys/statvfs.h>
-
+#include <dirent.h>
 namespace processpilot {
 
 double get_cpu_usage() {
@@ -153,5 +153,48 @@ bool is_network_up() {
     file >> state;
 
     return state == "up";
+}
+bool is_process_running(const std::string& process_name) {
+    DIR* directory = opendir("/proc");
+
+    if (directory == nullptr) {
+        return false;
+    }
+
+    struct dirent* entry;
+
+    while ((entry = readdir(directory)) != nullptr) {
+        std::string folder_name = entry->d_name;
+
+        // Check whether the folder name contains only digits
+        bool is_pid = !folder_name.empty();
+
+        for (char character : folder_name) {
+            if (!std::isdigit(static_cast<unsigned char>(character))) {
+                is_pid = false;
+                break;
+            }
+        }
+
+        if (!is_pid) {
+            continue;
+        }
+
+        std::string command_path =
+            "/proc/" + folder_name + "/comm";
+
+        std::ifstream command_file(command_path);
+        std::string command_name;
+
+        if (command_file >> command_name) {
+            if (command_name == process_name) {
+                closedir(directory);
+                return true;
+            }
+        }
+    }
+
+    closedir(directory);
+    return false;
 }
 }

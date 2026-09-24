@@ -57,5 +57,12 @@ if (network_status) {
 } else {
     std::cout << "Network Status: DOWN" << std::endl;
 }
+bool bash_running = processpilot::is_process_running("bash");
+
+if (bash_running) {
+    std::cout << "Bash Process: RUNNING" << std::endl;
+} else {
+    std::cout << "Bash Process: NOT RUNNING" << std::endl;
+}
     return 0;
 }
